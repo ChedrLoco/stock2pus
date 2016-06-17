@@ -30,9 +30,9 @@ describe('Stock', () => {
       const s1 = new Stock('aapl');
       s1.shares = 100;
       s1.purchasePricePerShare = 50;
-      s1.sell(25, (err, cashEarned) => {
+      s1.sell(25, (err, cashReceived) => {
         expect(err).to.be.null;
-        expect(cashEarned).to.be.above(0);
+        expect(cashReceived).to.be.above(0);
         expect(s1.shares).to.equal(75);
         done();
       });
