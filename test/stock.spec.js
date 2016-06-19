@@ -7,18 +7,23 @@ const sinon = require('sinon');
 let clock;
 
 describe('Stock', () => {
-  beforeEach(() => {
-    clock = sinon.useFakeTimers();
+  before(() => {
     nock('http://dev.markitondemand.com')
+    .persist()
     .get('/MODApis/Api/v2/Quote/json?symbol=AAPL')
     .reply(200, {
       Name: 'Apple',
       LastPrice: 100,
     });
   });
-  after(() => {
+  beforeEach(() => {
+    clock = sinon.useFakeTimers();
+  });
+  afterEach(() => {
     clock.restore();
-    nock.restore();
+  });
+  after(() => {
+    nock.cleanAll();
   });
 
   describe('constructor', () => {
