@@ -29,7 +29,7 @@ describe('Stock', () => {
   describe('constructor', () => {
     it('should construct a new Stock object', () => {
       const s1 = new Stock('aapl');
-      expect(s1.symbol).to.equal('AAPL');
+      expect(s1.symbol).to.equal('aapl');
     });
   });
 
