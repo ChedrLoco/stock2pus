@@ -3,6 +3,7 @@
 const expect = require('chai').expect;
 const Client = require('../lib/client');
 const Portfolio = require('../lib/portfolio');
+const Stock = require('../lib/stock');
 const nock = require('nock');
 
 describe('Client', () => {
@@ -33,6 +34,19 @@ describe('Client', () => {
       const c1 = new Client('Sara');
       c1.deposit(25);
       expect(c1.balance).to.equal(25);
+    });
+  });
+
+  describe('#positon', () => {
+    it('should get the position from the client', () => {
+      const c1 = new Client('Sara');
+      const p1 = new Portfolio('tech');
+      const s1 = new Stock('aapl');
+      c1.portfolios.push(p1);
+      p1.stocks.push(s1);
+      s1.shares = 10;
+      s1.purchasePricePerShare = 15;
+      expect(c1.position()).to.equal(150);
     });
   });
 
@@ -84,6 +98,30 @@ describe('Client', () => {
         expect(err.message).to.equal('Insufficient Funds');
         expect(c1.balance).to.equal(5);
         expect(c1.portfolios).to.have.length(0);
+        done();
+      });
+    });
+  });
+
+  describe('#sellStock', () => {
+    it('should sell stock', (done) => {
+      const c1 = new Client('Sara');
+      const p1 = new Portfolio('tech');
+      const s1 = new Stock('aapl');
+      const s2 = new Stock('goog');
+      const s3 = new Stock('aapl');
+      c1.portfolios.push(p1);
+      p1.stocks.push(s1, s2, s3);
+      s1.shares = 10;
+      s1.purchasePricePerShare = 15;
+      s2.shares = 20;
+      s2.purchasePricePerShare = 25;
+      s3.shares = 30;
+      s3.purchasePricePerShare = 35;
+      c1.sellStock('aapl', 11, 'tech', (err, amountMade) => {
+        expect(amountMade).to.equal(1100);
+        expect(c1.balance).to.equal(1100);
+        expect(c1.portfolios[0].stocks).to.have.length(2);
         done();
       });
     });
